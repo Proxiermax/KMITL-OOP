@@ -1,0 +1,45 @@
+@startuml rider_mission
+
+actor "Rider" as rider_account
+participant "App" as app
+participant "Rider" as rider
+participant "Customer" as customer
+participant "Order" as order
+participant "Restaurant" as restaurant
+
+group rider_mission
+    rider_account -> app ++: click_order_mission
+    loop for rider_loop in ride_list
+        app -> rider ++: get_rider
+        alt if rider_loop == rider
+            app <-- rider --: rider
+        end
+    end
+    loop for customer_loop in customer_list
+        app -> customer ++: get_customer
+        alt if customer_loop == customer
+            app <-- customer --: customer
+        end
+    end
+    app -> customer ++: confirmed_customer
+    loop looped_order in current_order_list
+    customer -> order ++: get_customer_order_list
+        alt looped_order == order_mission
+        customer <-- order --: customer_order_list
+        end
+    end
+    app <-- customer --: customer_order
+    group update_order
+        app -> order ++: update_order_state
+        app <-- order --: order_detail
+    end
+    app -> rider ++: add_requested_order_list
+    app <-- rider --: requested_order_list
+    group sent_menu
+        app -> restaurant ++: sent_deliverer_notificaion_and_start_cooking
+        app <-- restaurant --: order_detail
+    end
+end
+rider_account <-- app --: order_mission
+
+@enduml

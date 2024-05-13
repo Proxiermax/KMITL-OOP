@@ -1,0 +1,269 @@
+@startuml QuickMeal Class Diagram
+
+skinparam ClassAttributeIconSize 0
+
+'เขียนตาม EndPoint จาก Domain storytelling และ Use case diagram
+class Controller {
+    - customer_account_list: List
+    - rider_account_list: List
+    - restaurant_list: List
+    - approval_list: List
+    ' ..Simple Getter..
+    ' + get_customer_account_list()
+    ' + get_rider_account_list()
+    ' + ()
+    
+    ..Additional Methods..
+    + add_customer_account(new_customer: CustomerAccount)
+    + add_rider_account(new_rider: RiderAccount)
+    + add_restaurant_account(new_restaurant: RestaurantAccount)
+    + remove_customer_account(customer: CustomerAccount)
+    + remove_rider_account(rider: RiderAccount)
+    + remove_restaurant_account(restaurant: RestaurantAccount)
+    + search_restaurant_by_name (name: string)
+    + login(insertUsername, insertEmail, insertPassword)
+    + register(insertFullname, insertUsername, insertEmail, 
+        insertTelephone, insertPassword, insertType) 
+    + verify_account()
+    + create_account()
+    + add_review(insertText)
+    + edit_review(insertText)
+    + remove_review(insertText)
+    + get_profile(Account)
+    + get_avaliable_menu(Restaurant)
+    + get_address_list(CustomerAccount)
+    + get_order_list(CustomerAccount)
+    + get_paymet_list(CustomerAccount)
+    'ส่งแจ้งเตือน Order ไปให้ร้านอาหารหรือไรเดอร์
+    + send_order_to_restaurant(Account, Restaurant)
+    + send_order_to_rider(Account, Rider)
+    + get_len_current_order_list(Account)
+    + add_to_approval_list(Fullname, location, food_list)
+    + deny_approval()
+    + accept_approval()
+}
+
+
+class Account {
+    - type
+    - account_id: uuid4
+    - password: string
+    - profile: Profile
+    ' ..Simple Getter..
+    ' + get_id()
+    ' + get_password()
+    ' + get_profile()
+    ' ..Some Setter..
+    ' + set_id(): void
+    ' + set_profile()
+    ' + set_account()
+    ..Additional Methods..
+    + encrypt(password, key)
+}
+
+class Customer {
+    - address_list: List
+    - reviewed_list: List
+    'ออร์เดอร์ปัจจุบันที่อยู่ในตะกร้า
+    -current_order : Order
+    'ออร์เดอร์ที่สำเร็จแล้ว 
+    - transcipt_list : List 
+    ' ..Simple Getter..
+    ' + get_address()
+    ' + get_reviewed_list()
+    ..Additional Methods..
+    + add_food_into_cart(Food)
+    + add_address()
+    + add_review(Order)
+    + reduce_food_from_cart(Food)
+    + remove_address()
+    + remove_review(Order)
+    + edit_address(Address)
+    + edit_review()
+    + confirm_order()
+    + cancel_order()
+    + receive_order(Order)
+}
+
+class Rider {
+    - recieve_order_list: List
+    - reviewed_list: List
+    ' ..Simple Getter..
+    ' + get_recieve_order_list
+    ' + get_reviewed_list
+    ..Additional Methods..
+    + pick_up_food(Order)
+    + add_recieve_order(Order)
+    + confirm_recieve_food(Order)
+    + confirm_customer_recieve_food(Order, Customer)
+    + view_order_address(Order)
+    + view_status(Order)
+}
+
+class Restaurant {
+    - restaurant_name
+    - location
+    - food_list: List
+    - requested_order_list: List
+    - finished_order_list: List
+    - reviewed_list: List
+    ' ..Simple Getter..
+    ' + get_restaurant_name
+    ' + get_food_in_menu()
+    ' + get_location()
+    ' ..Some Setter..
+    ' + set_location()
+    ' + set_menu()
+    ' + add_food_into_menu()
+    ..Additional Methods..
+    + finished_cooking_order(Order)
+    + confirm_rider_recieve_food(Order, Rider)
+    + check_the_order(Order)
+}
+
+class AdminAccount{
+    
+    ..Methods..
+    + enter_controller()
+}
+
+class Order {
+    - order_id: uuid4
+    - customer: Customer
+    - rider: None
+    - restaurant_list: Restaurant 
+    - food_list : Food
+    - state: None
+    - payment: Payment
+    ' ..Simple Getter..
+    ' + get_order_id()
+    ' + get_customer()
+    ' + get_rider()
+    ' + get_restaurant_list()
+    ' + get_food_list()
+    ' + get_state()
+    ' ..Some Setter..
+    ' + set_state()
+    ..Additional Methods..
+    + update_state()
+    + update_payment_status
+    + update_rider(Rider)
+    + update_restaurant(Restaurant)
+}
+
+class Payment {
+    - payment_id: uuid4
+    - date_time
+    - food_list: List
+    - paid_restaurant: Restaurant
+    - amount: float
+    - status
+    ' ..Simple Getter..
+    ' + get_transaction_id()
+    ' + get_date_time()
+    ' + get_food_list()
+    ' + get_paid_restaurant()
+    ' + get_date_time()
+    ' + get_status()
+    ..Some Setter..
+    + set_status()
+}
+
+class Profile {
+    - username: string
+    - fullname: string
+    - email: Email
+    - telephone_number: string
+    - balance: int
+    - order_list: List[Order]
+    ' ..Simple Getter..
+    ' + get_username()
+    ' + get_fullname()
+    ' + get_email()
+    ' + get_telephone_number()
+    ' + get_balance()
+    ' ..Some Setter..
+    ' + set_username()
+    ' + set_fullname()
+    ' + set_email()
+    ' + set_telephone_number()
+    ' + set_balance()
+    ..Additional Methods..
+    + top_up()
+    + pay_out()
+}
+
+class Food {
+    - food_name
+    - food_type
+    - food_size
+    - food_price
+    - owned_restaurant
+    ' ..Simple Getter..
+    ' + get_restaurant()
+    ' + get_food_name()
+    ' + get_food_type()
+    ' + get_food_size()
+    ' + get_food_price()
+    ' ..Some Setter..
+    ' + set_restaurant()
+    ' + set_food_name()
+    ' + set_food_type()
+    ' + set_food_size()
+    ' + set_food_price()
+}
+
+class Review{
+    - owner
+    - rate: int
+    - comment: string
+    - rider: Rider
+    - restaurant: Restaurant
+    - type: str
+    ' ..Simple Getter..
+    ' + get_rate()
+    ' + get_comment()
+    ' + get_rider()
+    ' + get_restaurant()
+    ' + get_type()
+    ' ..Some Setter..
+    ' + set_rate()
+    ' + set_comment()
+    ' + set_rider()
+    ' + set_restaurant()
+    ' + set_type()
+}
+
+class Address{
+    - name : String
+    - contract : String
+    - province : String
+    - district : String
+    - street : String
+    - address_detail : String
+}
+
+Account <|-- Customer
+Account <|-- Rider
+Account <|-- Restaurant
+Account <|-- AdminAccount
+Profile --o  Account
+Food -- Restaurant : create
+Order --> Food : have
+Controller o-- Account
+
+
+Customer --> Order
+Order *-- Payment
+
+Order -- Rider
+Order --o Restaurant
+
+
+Review -> Customer : in
+Restaurant -> Review : in
+Rider -> Review : in
+
+Customer -> Address : have
+AdminAccount -> Controller
+@enduml

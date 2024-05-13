@@ -1,0 +1,16 @@
+@startuml confirm_order
+
+actor "Customer" as customer
+participant "App" as app
+participant "Customer" as customer_account
+participant "Profile" as profile
+participant "Order" as order
+participant "Rider" as rider
+participant "Payment" as payment
+
+group 
+
+
+end
+
+@enduml

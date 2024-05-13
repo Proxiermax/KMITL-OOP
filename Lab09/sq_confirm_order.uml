@@ -1,0 +1,36 @@
+@startuml confirm_order
+
+actor "Customer" as customer
+participant "App" as app
+participant "Customer" as customer_account
+participant "Profile" as profile
+participant "Order" as order
+participant "Rider" as rider
+participant "Payment" as payment
+
+group confirm_order
+    customer -> app ++: click_confirm_order
+    loop for customer_loop in customer_list
+    app -> customer_account ++: get_customer
+    alt if customer_loop == customer
+        app <-- customer_account --: customer
+    end
+    end
+        app -> customer_account ++: confirmed_customer
+        loop for order_loop in current_order_list
+        customer_account -> order ++: get_current_list
+        alt if order_loop == order
+            customer_account <-- order --: current_list
+        end
+        end
+        customer_account -> profile ++: process_balance
+        customer_account <-- profile --: balance
+        customer_account -> order ++: get_order
+        order -> payment ++: create_payment
+        order <-- payment --: payment
+        customer_account <-- order --: order
+        app <-- customer_account --: confirmed_order
+    customer <-- app --: order_detail
+end
+
+@enduml

@@ -1,0 +1,42 @@
+@startuml confirm_order
+
+actor "Customer" as customer_account
+participant "App" as app
+participant "Customer" as customer
+participant "Order" as order
+participant "Pocket" as pocket
+participant "Payment" as payment
+participant "Restaurant" as restaurant
+
+group confirm_order
+    customer_account -> app ++: confirm_current_order
+        loop looped_customer in customer_account_list:
+        app -> customer ++: get_customer
+        alt if looped_customer == customer:
+            app <-- customer --: customer
+        end
+        end
+        app -> customer ++: confirmed_customer
+            loop for looped_order in current_order_list
+            customer -> order ++: get_current_order_list
+            alt if looped_order == order
+                customer <-- order --: current_order_list
+            end
+            end
+            group process_payment
+                customer -> pocket ++: get_balance
+                customer <-- pocket --: balance
+                customer -> order ++: get_order
+                    order -> order : set_order_state
+                    order -> payment ++: init_payment
+                    order <-- payment --: payment
+                customer <-- order --: order
+            end
+        app <-- customer --: confirmed_order
+        
+
+
+    customer_account <-- app --: order_detail
+end
+
+@enduml

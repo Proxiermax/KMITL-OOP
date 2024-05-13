@@ -1,0 +1,10 @@
+@startuml
+
+actor "Rider" as rider_account
+participant "App" as app
+participant "Rider" as rider
+participant "Customer" as customer
+participant "Order" as order
+participant "Restaurant" as restaurant
+
+@enduml
